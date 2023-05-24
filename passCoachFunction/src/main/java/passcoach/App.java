@@ -22,23 +22,19 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
         headers.put("X-Custom-Header", "application/json");
+        headers.put("Access-Control-Allow-Origin", "*");
+        headers.put("Access-Control-Allow-Headers", "*");
 
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent()
                 .withHeaders(headers);
-        try {
-            final String pageContents = this.getPageContents("https://checkip.amazonaws.com");
-            String output = String.format("{ \"message\": \"hello world\", \"location\": \"%s\" }", pageContents);
+        //            final String pageContents = this.getPageContents("https://checkip.amazonaws.com");
+        String output = "{\"your request\":\""+ input.getBody()+"\"}";
+        System.out.println(output);
 
-            //save req+resp and timestamp todo
-            return response
-                    .withStatusCode(200)
-                    .withBody(output);
-        } catch (IOException e) {
-            //save request todo
-            return response
-                    .withBody("{}")
-                    .withStatusCode(500);
-        }
+        //save req+resp and timestamp todo
+        return response
+                .withStatusCode(200)
+                .withBody(output);
     }
 
     private String getPageContents(String address) throws IOException{
