@@ -1,23 +1,12 @@
-package passcoach;
+package passcoach.checks;
 
-public class PassCheck {
+import passcoach.PassInput;
 
-    private PassInput passInput;
+public class ComplexityCheck
+{
+    public String complexityAsString(PassInput passInput)
+    {
 
-    public String evaluatePass(final String pass) {
-        passInput = new PassInput(pass);
-        //todo
-        //1 check against leaks in db
-        //2 check against common complexity
-        String complexityResult = complexityAsString();
-        //3 estimate brute force
-        //4 check against common transformation
-        //5 formulate response chatGPT
-        System.out.println(complexityResult);
-        return "this pass is junk1"; //todo
-    }
-
-    private String complexityAsString() {
         int combo = 0;
         if (passInput.getDigit() > 0) combo++;
         if (passInput.getLower() > 0) combo++;

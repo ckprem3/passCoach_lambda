@@ -33,7 +33,7 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
         String pass = jsonElement.getAsString();
 
         //evaluate pass
-        PassCheck pc = new PassCheck();
+        PassCoach pc = new PassCoach();
         String output = pc.evaluatePass(pass);
 
         //creating the response json
