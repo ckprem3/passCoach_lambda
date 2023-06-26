@@ -1,58 +1,37 @@
 package passcoach;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+public class PassCheck {
 
-public class PassCheck
-{
-    private String pass;
+    private PassInput passInput;
 
-    public String evaluatePass(final String pass)
-    {
-        this.pass = pass;
-
+    public String evaluatePass(final String pass) {
+        passInput = new PassInput(pass);
         //todo
         //1 check against leaks in db
         //2 check against common complexity
-        String complexityResult = complexity(pass);
+        String complexityResult = complexityAsString();
         //3 estimate brute force
-        //4 formulate response chatGPT
+        //4 check against common transformation
+        //5 formulate response chatGPT
         System.out.println(complexityResult);
-        return "this pass is junk"; //todo
+        return "this pass is junk1"; //todo
     }
 
-    private String complexity(final String input)
-    {
-        int n = input.length();
-        int lower = 0, digit = 0, upper = 0, special = 0;
-        Set<Character> set = new HashSet<>(Arrays.asList(
-                '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '+', ' ', '_'));
-
-        for (char i : input.toCharArray())
-        {
-            if (Character.isLowerCase(i))
-                lower++;
-            if (Character.isUpperCase(i))
-                upper++;
-            if (Character.isDigit(i))
-                digit++;
-            if (set.contains(i))
-                special++;
-        }
+    private String complexityAsString() {
         int combo = 0;
-        if (digit > 0) combo++;
-        if (lower > 0) combo++;
-        if (upper > 0) combo++;
-        if (special > 0) combo++;
+        if (passInput.getDigit() > 0) combo++;
+        if (passInput.getLower() > 0) combo++;
+        if (passInput.getUpper() > 0) combo++;
+        if (passInput.getSpecial() > 0) combo++;
         // Strength of password
         String result;
-        if (digit > 1 && lower > 3 && upper > 1 && special > 0 && (n >= 12))
+        if (passInput.getDigit() > 1 && passInput.getLower() > 3 && passInput.getUpper() > 1
+                && passInput.getSpecial() > 0 && (passInput.getLength() >= 12))
             result = "Strong";
-        else if (combo > 2 && (n >= 8))
-            result = " Moderate";
+        else if (combo > 2 && (passInput.getLength() >= 8))
+            result = "Moderate";
         else
-            result = " Weak";
+            result = "Weak";
 
         return result;
     }

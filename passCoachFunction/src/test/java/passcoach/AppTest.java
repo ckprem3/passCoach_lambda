@@ -12,14 +12,13 @@ public class AppTest {
   public void successfulResponse() {
     App app = new App();
     APIGatewayProxyRequestEvent input = new APIGatewayProxyRequestEvent();
-    input.setBody("{\"message\":\"something\"}");
+    input.setBody("{\"pass\":\"asd\",\"\":\"\"}");
     APIGatewayProxyResponseEvent result = app.handleRequest(input, null);
     assertEquals(200, result.getStatusCode().intValue());
     assertEquals("application/json", result.getHeaders().get("Content-Type"));
     String content = result.getBody();
     assertNotNull(content);
-    assertTrue(content.contains("\"message\""));
-    //assertTrue(content.contains("\"hello world\""));
-    assertTrue(content.contains("\"something\""));
+    assertTrue(content.contains("\"pass\""));
+    assertTrue(content.contains("\"result\""));
   }
 }
