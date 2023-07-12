@@ -12,7 +12,7 @@ public class BruteForceCheckTest extends TestCase
     {
         BruteForceCheck bruteForceCheck= new BruteForceCheck();
         double result = bruteForceCheck.estimateBruteForce(new PassInput("retek12"));
-        assertEquals(2.0, result,0.5);
+        assertEquals(1.0, result,0.5);
     }
 
 }

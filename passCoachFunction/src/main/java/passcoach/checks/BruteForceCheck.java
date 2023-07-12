@@ -18,6 +18,6 @@ public class BruteForceCheck
         if (passInput.getSpecial() > 0) posibilities = posibilities + special;
         double sSpace = Math.pow(posibilities, passInput.getLength());
 
-        return sSpace / RTX3080 / hour;
+        return sSpace / RTX3080 / hour /2;
     }
 }
