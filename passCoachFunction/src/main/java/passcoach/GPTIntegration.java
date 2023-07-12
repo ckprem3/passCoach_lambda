@@ -1,5 +1,6 @@
 package passcoach;
 
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -21,7 +22,12 @@ public class GPTIntegration
     private final String msgs = "[{\"role\": \"system\", \"content\": \"cyber security assistant.\"},{\"role\": \"user\"," +
             " \"content\": \"What vulnerabilities do you see in the password '%1$s'? " +
             "Consider that it's complexity is %2$s, %3$s, %4$s " +
-            "and expected duration of a brute force attack is %5$f hours and your suggestions\"}]";
+            "and expected duration of a brute force attack is %5$f hours and your suggestions. Use HTML formatting\"}]";
+    private final LambdaLogger logger;
+
+    public GPTIntegration(LambdaLogger logger) {
+        this.logger = logger;
+    }
     /* curl https://api.openai.com/v1/chat/completions \
      -H "Content-Type: application/json" \
      -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -58,8 +64,10 @@ public class GPTIntegration
             if (StringUtils.isEmpty(apiKey))
                 throw new RuntimeException("No api key defined in the environment");
             String auth = "Bearer " + apiKey;
+            logger.log("Generating GPT query");
             String generatedQuery = generateQuery(pass, complexityResult, hasUpper, leak, dictionary, bruteforce);
             JsonElement jsonElement = JsonParser.parseString(generatedQuery);
+            logger.log("GPT query: " + generatedQuery);
 
             HttpURLConnection con = (HttpURLConnection) new URL(URI).openConnection();
 
@@ -74,15 +82,19 @@ public class GPTIntegration
             data.add("messages", jsonElement);
 
             con.setDoOutput(true);
+            logger.log("Sending query");
             con.getOutputStream().write(data.toString().getBytes());
 
+            logger.log("Awaiting response");
             String output = new BufferedReader(new InputStreamReader(con.getInputStream())).lines()
                     .reduce((a, b) -> a + b).get();
 
+            logger.log("Parsing response:" );
+            logger.log(output);
             JsonElement jsonResp = JsonParser.parseString(output);
             resp = jsonResp.getAsJsonObject().get("choices").getAsJsonArray().get(0).
                     getAsJsonObject().get("message").getAsJsonObject().get("content").getAsString();
-            System.out.println(resp);
+           logger.log("Response: "+resp);
 
         } catch (ProtocolException e)
         {

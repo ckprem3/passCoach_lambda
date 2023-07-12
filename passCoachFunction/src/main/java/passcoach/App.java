@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
@@ -20,6 +21,9 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
     public static final String RESULT = "result";
 
     public APIGatewayProxyResponseEvent handleRequest(final APIGatewayProxyRequestEvent input, final Context context) {
+        LambdaLogger logger = context.getLogger();
+        logger.log("Code starts");
+
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
         headers.put("X-Custom-Header", "application/json");
@@ -33,16 +37,17 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
         String pass = jsonElement.getAsString();
 
         //evaluate pass
-        PassCoach pc = new PassCoach();
+        logger.log("Pass evaluation");
+        PassCoach pc = new PassCoach(logger);
         String output = pc.evaluatePass(pass);
 
         //creating the response json
+        logger.log("Assembling response");
         JsonObject resp = new JsonObject();
         resp.addProperty(PASS,pass);
         resp.addProperty(RESULT, output);
-        System.out.println(resp);
+        logger.log("Response: "+resp.toString());
 
-        //save req+resp and timestamp todo
         return response
                 .withStatusCode(200)
                 .withBody(resp.toString());
