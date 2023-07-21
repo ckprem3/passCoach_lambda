@@ -8,13 +8,14 @@ import passcoach.checks.DBChecks;
 public class PassCoach
 {
 
-    private final DBChecks dbCheck = new DBChecks();
+    private final DBChecks dbCheck;
     private final ComplexityCheck complexityCheck = new ComplexityCheck();
     private final BruteForceCheck bruteForcecheck = new BruteForceCheck();
     private final LambdaLogger logger;
 
     public PassCoach(LambdaLogger logger) {
         this.logger=logger;
+        dbCheck = new DBChecks(logger);
     }
 
     public String evaluatePass(final String pass)
@@ -23,8 +24,8 @@ public class PassCoach
         PassInput passInput = new PassInput(pass);
         //1 check against in db
         logger.log("DB check");
-        boolean dictionary = dbCheck.checkDictionary(pass);
-        boolean leak = dbCheck.checkLeaked(pass);
+        Boolean dictionary = dbCheck.checkDictionary(pass);
+        Boolean leak = dbCheck.checkLeaked(pass);
         //2 check against common complexity
         logger.log(" Complexity check");
         String complexityResult = complexityCheck.complexityAsString(passInput);
@@ -37,7 +38,10 @@ public class PassCoach
         logger.log("Start GPT");
         GPTIntegration gptIntegration = new GPTIntegration(logger);
         boolean hasUpper = passInput.getUpper() > 0;
-
-        return gptIntegration.explodeResult(pass, complexityResult, hasUpper, leak, dictionary, bruteforce);
+        String explodedResult = gptIntegration.explodeResult(pass, complexityResult, hasUpper, leak, dictionary, bruteforce);
+        logger.log("Persist request/response");
+        dbCheck.save(pass, explodedResult);
+        logger.log("Returning result");
+        return explodedResult;
     }
 }
