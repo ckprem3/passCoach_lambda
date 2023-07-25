@@ -14,8 +14,9 @@ public class ComplexityCheck
         if (passInput.getSpecial() > 0) combo++;
         // Strength of password
         String result;
-        if (passInput.getDigit() > 1 && passInput.getLower() > 3 && passInput.getUpper() > 1
-                && passInput.getSpecial() > 0 && (passInput.getLength() >= 12))
+        if ((passInput.getDigit() > 1 && passInput.getLower() > 1 && passInput.getUpper() > 1
+                && passInput.getSpecial() > 0 && (passInput.getLength() >= 12)) ||
+                ((passInput.getLength() > 20) && (combo > 1)))
             result = "Strong";
         else if (combo > 2 && (passInput.getLength() >= 8))
             result = "Moderate";
