@@ -2,6 +2,7 @@ package passcoach;
 
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import junit.framework.TestCase;
+import org.junit.Test;
 import passcoach.checks.MockLambdaLogger;
 
 
@@ -32,13 +33,40 @@ public class GPTIntegrationTest extends TestCase
     }
 
 
+
+    @Test (expected = RuntimeException.class)
+    public void myTestMethod()
+    {
+        try
+        {
+            //Run exception throwing operation here
+        }
+        catch(RuntimeException re)
+        {
+            String message = "Employee ID is null";
+            assertEquals(message, re.getMessage());
+            throw re;
+        }
+        fail("Employee Id Null exception did not throw!");
+    }
+    @Test(expected = RuntimeException.class)
     public void testExplodeResult()
     {
-//        todo mock external service
-        String gptResult = gptIntegration.explodeResult("bela1024", "weak", false, false, true, 50.2);
-        assertTrue(gptResult.contains("bela1024"));
-        assertTrue(gptResult.contains("weak"));
-        assertTrue(gptResult.contains("common"));
+//        todo mock external  until that test exception
+
+        try
+        {
+            String gptResult = gptIntegration.explodeResult("bela1024", "weak", false, false, true, 50.2);
+            assertTrue(gptResult.contains("bela1024"));
+            assertTrue(gptResult.contains("weak"));
+            assertTrue(gptResult.contains("common"));
+
+        }
+        catch(RuntimeException re)
+        {
+            String message = "No api key defined in the environment";
+            assertEquals(message, re.getMessage());
+        }
 
     }
 
