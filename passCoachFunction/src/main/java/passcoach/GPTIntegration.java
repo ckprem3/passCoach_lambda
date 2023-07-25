@@ -13,7 +13,8 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 
-public class GPTIntegration {
+public class GPTIntegration
+{
     public static final String URI = "https://api.openai.com/v1/chat/completions";
     public static final String DOES_NOT_CONTAIN_UPPERCASE_LETTERS = "does not contain uppercase letters";
     public static final String WAS_PART_OF_A_KNOWN_LEAK = "was part of a known leak";
@@ -36,7 +37,8 @@ public class GPTIntegration {
 
     private final LambdaLogger logger;
 
-    public GPTIntegration(LambdaLogger logger) {
+    public GPTIntegration(LambdaLogger logger)
+    {
         this.logger = logger;
     }
     /* curl https://api.openai.com/v1/chat/completions \
@@ -50,7 +52,8 @@ public class GPTIntegration {
            }'
 */
 
-    public String generateQuery(String pass, String complexityResult, boolean hasUpper, Boolean leak, Boolean dictionary, double bruteforce) {
+    public String generateQuery(String pass, String complexityResult, boolean hasUpper, Boolean leak, Boolean dictionary, double bruteforce)
+    {
         String p2, p3 = "", p4 = "";
         p2 = complexityResult;
         if (!hasUpper)
@@ -65,10 +68,12 @@ public class GPTIntegration {
     }
 
 
-    public String explodeResult(String pass, String complexityResult, boolean hasUpper, Boolean leak, Boolean dictionary, double bruteforce) {
+    public String explodeResult(String pass, String complexityResult, boolean hasUpper, Boolean leak, Boolean dictionary, double bruteforce)
+    {
 
         String resp = createFallBackMessage(pass, complexityResult, hasUpper, leak, dictionary, bruteforce);
-        try {
+        try
+        {
             String apiKey = System.getenv("API_KEY");
             if (StringUtils.isEmpty(apiKey))
                 throw new RuntimeException("No api key defined in the environment");
@@ -87,7 +92,7 @@ public class GPTIntegration {
             JsonObject data = new JsonObject();
             data.addProperty("model", "gpt-3.5-turbo");
 
-            data.addProperty("max_tokens", 250);
+            data.addProperty("max_tokens", 256);
             data.add("messages", jsonElement);
 
             con.setDoOutput(true);
@@ -100,9 +105,11 @@ public class GPTIntegration {
 
             resp = parsereponse(output);
 
-        } catch (ProtocolException e) {
+        } catch (ProtocolException e)
+        {
             throw new RuntimeException("Communication with GPT not possible, wrong Protocol", e);
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             //todo clean up
             System.out.println(e.getMessage());
             return resp;
@@ -110,7 +117,8 @@ public class GPTIntegration {
         return resp;
     }
 
-    public String createFallBackMessage(String pass, String complexityResult, boolean hasUpper, Boolean leak, Boolean dictionary, double bruteforce) {
+    public String createFallBackMessage(String pass, String complexityResult, boolean hasUpper, Boolean leak, Boolean dictionary, double bruteforce)
+    {
         String p2, p3 = "", p4 = "";
         p2 = complexityResult;
         if (!hasUpper)
@@ -120,13 +128,17 @@ public class GPTIntegration {
         return String.format(fallbackMessage, pass, p2, p3, p4, bruteforce);
     }
 
-    private String parsereponse(String output) {
+    private String parsereponse(String output)
+    {
         logger.log("Parsing response:");
         logger.log(output);
         JsonElement jsonResp = JsonParser.parseString(output);
         String resp = jsonResp.getAsJsonObject().get("choices").getAsJsonArray().get(0).
                 getAsJsonObject().get("message").getAsJsonObject().get("content").getAsString();
         resp = resp.replace("\n", "<br>").replace("\t", "<&emsp>");
+        int lastSentence = resp.lastIndexOf(".");
+        if (resp.length() - lastSentence < 50)
+            resp = resp.substring(0, lastSentence + 1);
         logger.log("Response: " + resp);
         return resp;
     }

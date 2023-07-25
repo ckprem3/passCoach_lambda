@@ -27,7 +27,7 @@ public class PassCoach
         Boolean dictionary = dbCheck.checkDictionary(pass);
         Boolean leak = dbCheck.checkLeaked(pass);
         //2 check against common complexity
-        logger.log(" Complexity check");
+        logger.log("Complexity check");
         String complexityResult = complexityCheck.complexityAsString(passInput);
         logger.log("Complexity= "+ complexityResult);
         //3 estimate brute force
