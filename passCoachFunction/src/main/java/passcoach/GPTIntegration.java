@@ -138,7 +138,7 @@ public class GPTIntegration
         resp = resp.replace("\n", "<br>").replace("\t", "<&emsp>");
         int lastSentence = resp.lastIndexOf(".");
         if (resp.length() - lastSentence < 50)
-            resp = resp.substring(0, lastSentence + 1);
+            resp = resp.substring(0, lastSentence );
         logger.log("Response: " + resp);
         return resp;
     }
