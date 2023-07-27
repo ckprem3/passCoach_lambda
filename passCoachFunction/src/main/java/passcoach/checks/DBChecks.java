@@ -26,7 +26,7 @@ public class DBChecks {
         this.logger = logger;
         client = AmazonDynamoDBClientBuilder.standard().build();
         dynamoDB = new DynamoDB(client);
-        logger.log("DB client ");
+        logger.log("DB client done");
     }
 
     public Boolean checkLeaked(String pass) {

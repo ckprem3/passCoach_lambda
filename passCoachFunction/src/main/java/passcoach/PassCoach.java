@@ -5,6 +5,8 @@ import passcoach.checks.BruteForceCheck;
 import passcoach.checks.ComplexityCheck;
 import passcoach.checks.DBChecks;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 public class PassCoach
 {
 
@@ -20,28 +22,53 @@ public class PassCoach
 
     public String evaluatePass(final String pass)
     {
+        long kezdo= System.currentTimeMillis();
         logger.log("Start Eval");
         PassInput passInput = new PassInput(pass);
         //1 check against in db
         logger.log("DB check");
-        Boolean dictionary = dbCheck.checkDictionary(pass);
-        Boolean leak = dbCheck.checkLeaked(pass);
+        AtomicReference<Boolean> dictionary = new AtomicReference<>();
+        Thread dictionaryThread =new Thread(() -> dictionary.set(dbCheck.checkDictionary(pass)),"dictionaryThread");
+        dictionaryThread.start();
+        AtomicReference<Boolean> leak = new AtomicReference<>();
+        Thread leakThread =new Thread(() -> leak.set(dbCheck.checkLeaked(pass)),"leakThread");
+        leakThread.start();
         //2 check against common complexity
         logger.log("Complexity check");
-        String complexityResult = complexityCheck.complexityAsString(passInput);
+        AtomicReference<String> complexityResult = new AtomicReference<>();
+        Thread complexityThread =new Thread(() -> complexityResult.set(complexityCheck.complexityAsString(passInput)), "complexityThread");
+        complexityThread.start();
         logger.log("Complexity= "+ complexityResult);
         //3 estimate brute force
         logger.log("Brute force estimate");
-        double bruteforce = bruteForcecheck.estimateBruteForce(passInput);
+        AtomicReference<Double> bruteforce = new AtomicReference<>((double) 0);
+        Thread bruteforceThread =new Thread(() -> bruteforce.set(bruteForcecheck.estimateBruteForce(passInput)), "bruteforceThread");
+        bruteforceThread.start();
+        // get back to main exec thread
+        try
+        {
+            dictionaryThread.join();
+            leakThread.join();
+            complexityThread.join();
+            bruteforceThread.join();
+
+        } catch (InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
         //4 check against common transformation
         //5 formulate response chatGPT
         logger.log("Start GPT");
         GPTIntegration gptIntegration = new GPTIntegration(logger);
         boolean hasUpper = passInput.getUpper() > 0;
-        String explodedResult = gptIntegration.explodeResult(pass, complexityResult, hasUpper, leak, dictionary, bruteforce);
+       // String explodedResult = gptIntegration.explodeResult(pass, complexityResult, hasUpper, leak, dictionary, bruteforce);
         logger.log("Persist request/response");
+        String explodedResult = "explodedResult thread test asdasd";
         dbCheck.save(pass, explodedResult);
         logger.log("Returning result");
+        long vege= System.currentTimeMillis();
+        logger.log("time: " + (vege - kezdo));
+
         return explodedResult;
     }
 }
