@@ -137,8 +137,8 @@ public class GPTIntegration
                 getAsJsonObject().get("message").getAsJsonObject().get("content").getAsString();
         resp = resp.replace("\n", "<br>").replace("\t", "<&emsp>");
         int lastSentence = resp.lastIndexOf(".");
-        if (resp.length() - lastSentence < 50)
-            resp = resp.substring(0, lastSentence );
+        if (resp.length() - lastSentence < 100)
+            resp = resp.substring(0, lastSentence);
         logger.log("Response: " + resp);
         return resp;
     }

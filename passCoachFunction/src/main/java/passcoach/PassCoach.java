@@ -24,8 +24,8 @@ public class PassCoach
         PassInput passInput = new PassInput(pass);
         //1 check against in db
         logger.log("DB check");
-        Boolean dictionary = dbCheck.checkDictionary(pass);
         Boolean leak = dbCheck.checkLeaked(pass);
+        Boolean dictionary = dbCheck.checkDictionary(pass);
         //2 check against common complexity
         logger.log("Complexity check");
         String complexityResult = complexityCheck.complexityAsString(passInput);
