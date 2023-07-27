@@ -7,7 +7,8 @@ import java.util.Set;
 public class PassInput {
 
     private static final Set<Character> SPECIAL_SET = new HashSet<>(Arrays.asList(
-            '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '+', ' ', '_'));
+            '~', '`', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '+', '=', '{', '}', '[', ']', '|',
+            '\\', '/', ':', ';', '"', '\'', '<', '>', ',', '.', '?'));
 
     private int length;
     private int lower;
