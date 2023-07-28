@@ -57,11 +57,12 @@ public class GPTIntegrationTest extends TestCase
 
 
     public void testCreateFallBackMessage() {
-        String generatedQuery = gptIntegration.createFallBackMessage("retek1024", "weak", false, null, null, 128);
-        assertTrue(generatedQuery.contains("retek1024"));
-        assertTrue(generatedQuery.contains("weak"));
-        assertTrue(generatedQuery.contains(GPTIntegration.DOES_NOT_CONTAIN_UPPERCASE_LETTERS));
-        assertTrue(generatedQuery.contains("128"));
+        String fallBackMessage = gptIntegration.createFallBackMessage("retek1024", "weak", false, null, null, 128);
+        System.out.println(fallBackMessage);
+        assertTrue(fallBackMessage.contains("retek1024"));
+        assertTrue(fallBackMessage.contains("weak"));
+        assertTrue(fallBackMessage.contains(GPTIntegration.DOES_NOT_CONTAIN_UPPERCASE_LETTERS));
+        assertTrue(fallBackMessage.contains("128"));
     }
 
     public void testParsereponse()

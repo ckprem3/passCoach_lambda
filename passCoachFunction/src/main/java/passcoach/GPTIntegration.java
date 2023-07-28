@@ -16,23 +16,23 @@ import java.net.URL;
 public class GPTIntegration
 {
     public static final String URI = "https://api.openai.com/v1/chat/completions";
-    public static final String DOES_NOT_CONTAIN_UPPERCASE_LETTERS = "does not contain uppercase letters";
+    public static final String DOES_NOT_CONTAIN_UPPERCASE_LETTERS = ", does not contain uppercase letters";
     public static final String WAS_PART_OF_A_KNOWN_LEAK = "was part of a known leak";
     public static final String CAN_BE_FOUND_IN_THE_ENGLISH_VOCABULARY = "can be found in the english vocabulary,";
     public static final String PART_OF_A_KNOWN_SECURITY_BREACH = "part of a known security breach";
     public static final String A_WORD_IN_THE_ENGLISH_DICTIONARY = "a word in the english dictionary";
     public static final String IS_IT = "is it ";
-    public static final String IT_IS = "it is ";
+    public static final String IT_IS = "It is ";
     public static final String QUESTION = "?";
     public static final String IT_S_LENGTH_IS = "it's length is ";
     private final String msgs = "[{\"role\": \"system\", \"content\": \"cyber security assistant.\"},{\"role\": \"user\"," +
             " \"content\": \"What vulnerabilities do you see in the password '%1$s'? " +
             "Consider that it's complexity is %2$s, %3$s, %4$s " +
             "and expected duration of a brute force attack is %5$.2f hours and your suggestions\"}]";
-    private final String fallbackMessage = "The password %1$s, is considered %2$s, "
-            + "consider using a longer passphrase instead. <br> %3$s %4$s <br> "
+    private final String fallbackMessage = "The password \"%1$s\", is considered %2$s, "
+            + "<br>Consider using a longer passphrase instead. <br> %3$s <br> %4$s <br> "
             + "The estimated time to bruteforce is: %5$.2f hours <br>"
-            + "Try to use special characters that can not be found on the keyboard like: ë,®,Ñ.. <br>"
+            + "<br>Try to use special characters that can not be found on the keyboard like: ë,®,Ñ.. <br>"
             + "Always consider that password length is more important then character types";
 
     private final LambdaLogger logger;
@@ -57,7 +57,7 @@ public class GPTIntegration
         String p2, p3 = "", p4 = "";
         p2 = complexityResult;
         if (!hasUpper)
-            p2 = complexityResult + ", " + DOES_NOT_CONTAIN_UPPERCASE_LETTERS;
+            p2 = complexityResult + DOES_NOT_CONTAIN_UPPERCASE_LETTERS;
         if (leak == null)
             p3 = IS_IT + PART_OF_A_KNOWN_SECURITY_BREACH + QUESTION;
         else if (leak) p3 = WAS_PART_OF_A_KNOWN_LEAK;
