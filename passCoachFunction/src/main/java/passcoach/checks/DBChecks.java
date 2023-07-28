@@ -35,7 +35,7 @@ public class DBChecks {
     }
 
     public Boolean checkDictionary(String pass) {
-        return getItem(pass, DICTIONARY);
+        return getItem(pass.toLowerCase(), DICTIONARY);
     }
 
     private Boolean getItem(String pass, String tableName) {
