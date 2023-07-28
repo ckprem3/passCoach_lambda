@@ -39,7 +39,6 @@ public class PassCoach
         AtomicReference<String> complexityResult = new AtomicReference<>();
         Thread complexityThread = new Thread(() -> complexityResult.set(complexityCheck.complexityAsString(passInput)), "complexityThread");
         complexityThread.start();
-        logger.log("Complexity= " + complexityResult);
         //3 estimate brute force
         logger.log("Brute force estimate");
         AtomicReference<Double> bruteforce = new AtomicReference<>((double) 0);

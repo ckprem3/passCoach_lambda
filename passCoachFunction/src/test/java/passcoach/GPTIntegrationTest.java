@@ -63,4 +63,32 @@ public class GPTIntegrationTest extends TestCase
         assertTrue(generatedQuery.contains(GPTIntegration.DOES_NOT_CONTAIN_UPPERCASE_LETTERS));
         assertTrue(generatedQuery.contains("128"));
     }
+
+    public void testParsereponse()
+    {
+        String input = "{\n" +
+                "    \"id\": \"chatcmpl-7hH7zlj6IJr9YoLTNyhYViogXPtPO\",\n" +
+                "    \"object\": \"chat.completion\",\n" +
+                "    \"created\": 1690548299,\n" +
+                "    \"model\": \"gpt-3.5-turbo-0613\",\n" +
+                "    \"choices\": [\n" +
+                "        {\n" +
+                "            \"index\": 0,\n" +
+                "            \"message\": {\n" +
+                "                \"role\": \"assistant\",\n" +
+                "                \"content\": \"asbdiusgfiegw befibw \\n vwquyfwu8g 1.sdfniu\\n1. text wefw\" "+
+                "            },\n" +
+                "            \"finish_reason\": \"length\"\n" +
+                "        }\n" +
+                "    ],\n" +
+                "    \"usage\": {\n" +
+                "        \"prompt_tokens\": 63,\n" +
+                "        \"completion_tokens\": 256,\n" +
+                "        \"total_tokens\": 319\n" +
+                "    }\n" +
+                "} ";
+        String response = gptIntegration.parseResponse(input);
+        assertTrue(response.startsWith("asbdiusgfiegw befibw <br> vwquyfwu8g 1.sdfniu"));
+
+    }
 }

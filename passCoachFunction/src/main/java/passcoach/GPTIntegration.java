@@ -103,7 +103,7 @@ public class GPTIntegration
             String output = new BufferedReader(new InputStreamReader(con.getInputStream())).lines()
                     .reduce((a, b) -> a + b).get();
 
-            resp = parsereponse(output);
+            resp = parseResponse(output);
 
         } catch (ProtocolException e)
         {
@@ -128,7 +128,7 @@ public class GPTIntegration
         return String.format(fallbackMessage, pass, p2, p3, p4, bruteforce);
     }
 
-    private String parsereponse(String output)
+    public String parseResponse(String output)
     {
         logger.log("Parsing response:");
         logger.log(output);
@@ -136,8 +136,8 @@ public class GPTIntegration
         String resp = jsonResp.getAsJsonObject().get("choices").getAsJsonArray().get(0).
                 getAsJsonObject().get("message").getAsJsonObject().get("content").getAsString();
         resp = resp.replace("\n", "<br>").replace("\t", "<&emsp>");
-        int lastSentence = resp.lastIndexOf(".");
-        if (resp.length() - lastSentence < 100)
+        int lastSentence = resp.lastIndexOf("<br>");
+        if (resp.length() - lastSentence < 150)
             resp = resp.substring(0, lastSentence );
         logger.log("Response: " + resp);
         return resp;
